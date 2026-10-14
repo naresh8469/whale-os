@@ -31,7 +31,7 @@ function kpis(){const P=S.pairs,h=Date.now()-36e5;const w=S.whaleTrades.filter(t
  UNLOCKS:null,LEVERAGE:null,FLOWS:Math.round(w.reduce((s,t)=>s+(t.side=='BUY'?t.usd:-t.usd),0))};
  for(const[x,v]of Object.entries(k)){if(v===null)continue;const a=(S.kpiHist[x]??=[]);a.push(v);if(a.length>60)a.shift()}return k}
 const MIME={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png'};
-http.createServer((q,r)=>{if(q.method!=='GET'&&q.method!=='HEAD'){r.writeHead(405);return r.end()}const u=q.url.split('?')[0];
+http.createServer((q,r)=>{if(q.method!=='GET'&&q.method!=='HEAD'){r.writeHead(405);return r.end()}let u=q.url.split('?')[0];if(u===''||u.endsWith('/'))u='/';
  if(u==='/api/state'){r.writeHead(200,{'content-type':'application/json'});return r.end(JSON.stringify({now:Date.now(),whaleUsd:WHALE_USD,kpi:kpis(),kpiHist:S.kpiHist,pairs:S.pairs,trending:S.trending,newPools:S.newPools,btc:S.btc,eth:S.eth,klines:S.klines,whaleTrades:S.whaleTrades,events:S.events.slice(0,80),status:S.status,boostCount:S.boosts.length,profileCount:S.profiles.length}))}
  if(u.startsWith('/api/depth')){return j(BIN+'/depth?symbol=BTCUSDT&limit=20').then(d=>{r.writeHead(200,{'content-type':'application/json'});r.end(JSON.stringify(d))}).catch(e=>{r.writeHead(502);r.end('{}')})}
  const f=path.join(__dirname,'public',u==='/'?'index.html':path.normalize(u));if(!f.startsWith(path.join(__dirname,'public'))){r.writeHead(403);return r.end()}
