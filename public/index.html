@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#050b18"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><title>WHALE-OS // watch-only</title><link rel="stylesheet" href="style.css"></head><body>
+<header><b>WHALE-OS</b> <span class="dim">v0.1 · WATCH-ONLY · NO WALLET · NO TRADING</span><span id="clock"></span></header>
+<div id="kpis"></div>
+<main>
+ <section class="p" style="grid-area:src"><h3>SOURCES</h3><div id="sources"></div></section>
+ <section class="p" style="grid-area:insp"><h3>TOKEN INSPECTOR <span class="dim">top DexScreener spike</span></h3><div id="insp"></div></section>
+ <section class="p" style="grid-area:radar"><h3>RADAR <span class="dim">nodes = sources (cyan up, red down, dashed = no key) · dots = pairs (angle=chain, radius=age, size=5m vol)</span></h3><canvas id="radar"></canvas></section>
+ <section class="p" style="grid-area:book"><h3>ORDER BOOK <span class="dim">Binance BTCUSDT depth</span></h3><div id="book"></div></section>
+ <section class="p" style="grid-area:cons"><h3>"WHALE BUYING IS NOISE"? <span class="dim">consensus score</span></h3><div id="cons"></div></section>
+ <section class="p" style="grid-area:trades"><h3>SPIKE TABLE <span class="dim">DexScreener m5 vol ÷ h1 avg</span></h3><div id="trades" class="scroll"></div></section>
+ <section class="p" style="grid-area:tail"><h3>EVENT TAIL</h3><div id="tail" class="scroll mono"></div></section>
+ <section class="p" style="grid-area:candle"><h3>BTCUSDT 5m <span class="dim">Binance klines</span></h3><canvas id="candle"></canvas></section>
+ <section class="p" style="grid-area:bayes"><h3>BAYES P(up | whale buy) <span class="dim">Beta posterior</span></h3><canvas id="bayes"></canvas></section>
+ <section class="p" style="grid-area:trend"><h3>GECKOTERMINAL TRENDING</h3><div id="trend" class="scroll"></div></section>
+</main>
+<footer id="bar"></footer><script src="app.js"></script></body></html>

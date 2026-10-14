@@ -1,0 +1,26 @@
+*{box-sizing:border-box}body{margin:0;background:#050b18;color:#9fe8ff;font:11px/1.35 "JetBrains Mono",Consolas,monospace;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{padding:6px 10px;border-bottom:1px solid #0e3a52;letter-spacing:2px}header b{color:#3ff;text-shadow:0 0 8px #0ff;font-size:14px}#clock{float:right}
+.dim{color:#4a7d92;font-weight:normal;letter-spacing:0}
+#kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:6px}
+.k{border:1px solid #0e3a52;background:linear-gradient(#071a2b,#050f1d);padding:4px 8px;box-shadow:inset 0 0 12px #0ff1}.k .l{color:#4a9ab8;font-size:10px}.k .v{font-size:20px;color:#3ff;text-shadow:0 0 6px #0ff8}.k canvas{width:100%;height:22px}
+.k.na .v{color:#456;text-shadow:none;font-size:12px}
+main{flex:1;display:grid;gap:6px;padding:0 6px;min-height:0;grid-template-columns:1fr 1.1fr 1.6fr 1.1fr 1fr;grid-template-rows:1fr 1fr 1fr;
+grid-template-areas:"src insp radar book cons" "trades trades radar tail tail" "candle candle bayes trend trend"}
+.p{border:1px solid #0e3a52;background:#06121fdd;padding:4px 6px;min-height:0;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 10px #00e5ff12}
+h3{margin:0 0 4px;font-size:10px;color:#3ff;letter-spacing:1.5px}canvas{flex:1;width:100%;min-height:0}
+.scroll{overflow:auto;flex:1}table{width:100%;border-collapse:collapse}td,th{padding:1px 3px;text-align:right;white-space:nowrap}th{color:#4a9ab8;font-weight:normal}td:first-child,th:first-child{text-align:left}
+.g{color:#3f9}.r{color:#f46}.y{color:#fd4}.ok::before{content:"● ";color:#3f9}.bad::before{content:"● ";color:#f46}
+.bar{height:9px;margin:1px 0;position:relative}.bar i{position:absolute;top:0;bottom:0}.bar span{position:relative;font-size:9px;padding:0 2px}
+footer{border-top:1px solid #0e3a52;padding:4px 10px;display:flex;gap:22px;margin-top:6px}
+.score{font-size:30px;text-align:center;color:#3ff;text-shadow:0 0 10px #0ff}
+@media (max-width:760px){
+body{height:auto;overflow:auto;font-size:12px;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:#050b18;padding-top:max(6px,env(safe-area-inset-top))}header .dim{display:block;font-size:9px}#clock{float:none;display:block;font-size:10px}
+#kpis{grid-template-columns:1fr 1fr}.k .v{font-size:18px}
+main{display:flex;flex-direction:column;padding:0 6px}
+.p{min-height:auto;overflow:visible}.scroll{max-height:320px;overflow:auto;-webkit-overflow-scrolling:touch}
+#trades,#trend{overflow-x:auto}#trades table,#trend table{min-width:520px}
+section[style*="radar"] canvas{aspect-ratio:1;flex:none}
+section[style*="candle"] canvas,section[style*="bayes"] canvas{height:200px;flex:none}
+a{display:inline-block;padding:8px 0}
+footer{flex-wrap:wrap;gap:8px 14px;padding-bottom:max(6px,env(safe-area-inset-bottom))}}
