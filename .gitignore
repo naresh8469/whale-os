@@ -1,3 +1,5 @@
 server.log
 tunnel.log
 node_modules
+data/
+backtest/*-5m.json

@@ -1,0 +1,46 @@
+{
+ "BTC-USDT": {
+  "from": "2026-04-16T03:25:00.000Z",
+  "to": "2026-10-15T03:15:00.000Z",
+  "candles": 52415,
+  "buyHoldPct": 8.22,
+  "strategy": {
+   "trades": 2347,
+   "winRate": 20.6,
+   "profitFactor": 0.15,
+   "maxDDPct": 99.16,
+   "netPct": -99.16,
+   "endEquity": 8.43
+  },
+  "baseline_EMA_only": {
+   "trades": 1954,
+   "winRate": 20.3,
+   "profitFactor": 0.16,
+   "maxDDPct": 97.89,
+   "netPct": -97.89,
+   "endEquity": 21.11
+  }
+ },
+ "ETH-USDT": {
+  "from": "2026-04-16T03:25:00.000Z",
+  "to": "2026-10-15T03:15:00.000Z",
+  "candles": 52415,
+  "buyHoldPct": 0.39,
+  "strategy": {
+   "trades": 2367,
+   "winRate": 28.9,
+   "profitFactor": 0.26,
+   "maxDDPct": 99.18,
+   "netPct": -99.18,
+   "endEquity": 8.25
+  },
+  "baseline_EMA_only": {
+   "trades": 1939,
+   "winRate": 26.6,
+   "profitFactor": 0.22,
+   "maxDDPct": 98.12,
+   "netPct": -98.11,
+   "endEquity": 18.86
+  }
+ }
+}

@@ -6,7 +6,7 @@ const S={boosts:[],profiles:[],pairs:[],trending:[],newPools:[],btc:null,eth:nul
 const log=(t,m)=>{S.events.unshift({ts:Date.now(),t,m});S.events.length=Math.min(S.events.length,200)};
 async function j(u){const t=Date.now();try{const r=await fetch(u,{headers:{accept:'application/json'}});const host=new URL(u).host;S.status[host]={ok:r.ok,code:r.status,ms:Date.now()-t,at:Date.now()};if(!r.ok)throw new Error(r.status);return r.json()}catch(e){S.status[new URL(u).host]={ok:false,err:String(e.message),at:Date.now()};throw e}}
 function sig(p){const v5=p.volume?.m5||0,h1=p.volume?.h1||0,b=p.txns?.m5?.buys||0,s=p.txns?.m5?.sells||0,bh=p.txns?.h1?.buys||0,sh=p.txns?.h1?.sells||0;
- return{chain:p.chainId,dex:p.dexId,addr:p.pairAddress,url:p.url,sym:p.baseToken?.symbol,name:p.baseToken?.name,price:+p.priceUsd||0,liq:p.liquidity?.usd||0,fdv:p.fdv||0,
+ return{chain:p.chainId,dex:p.dexId,addr:p.pairAddress,token:p.baseToken?.address,url:p.url,sym:p.baseToken?.symbol,name:p.baseToken?.name,price:+p.priceUsd||0,liq:p.liquidity?.usd||0,fdv:p.fdv||0,
  v5,h1,h24:p.volume?.h24||0,spike:h1>0?v5/(h1/12):0,b5:b,s5:s,bh,sh,imb:(bh+sh)?(bh-sh)/(bh+sh):0,chg5:p.priceChange?.m5||0,chg1:p.priceChange?.h1||0,chg24:p.priceChange?.h24||0,
  created:p.pairCreatedAt||0,ageH:p.pairCreatedAt?(Date.now()-p.pairCreatedAt)/36e5:null}}
 async function pollDex(){try{
@@ -29,12 +29,12 @@ const BY='https://api.bybit.com/v5/market',OK='https://www.okx.com/api/v5/market
 const EX={
  bybit:{name:'Bybit',
   async ticker(sym){const r=await j(`${BY}/tickers?category=spot&symbol=${sym}`);if(r.retCode)throw new Error('bybit '+r.retMsg);const t=r.result.list[0];return{symbol:sym,lastPrice:t.lastPrice,priceChangePercent:String(+t.price24hPcnt*100),highPrice:t.highPrice24h,lowPrice:t.lowPrice24h,volume:t.volume24h,quoteVolume:t.turnover24h}},
-  async klines(){const r=await j(`${BY}/kline?category=spot&symbol=BTCUSDT&interval=5&limit=96`);if(r.retCode)throw new Error('bybit '+r.retMsg);return r.result.list.map(x=>[+x[0],+x[1],+x[2],+x[3],+x[4],+x[5]]).reverse()},
+  async klines(sym='BTCUSDT'){const r=await j(`${BY}/kline?category=spot&symbol=${sym}&interval=5&limit=96`);if(r.retCode)throw new Error('bybit '+r.retMsg);return r.result.list.map(x=>[+x[0],+x[1],+x[2],+x[3],+x[4],+x[5]]).reverse()},
   async depth(){const r=await j(`${BY}/orderbook?category=spot&symbol=BTCUSDT&limit=20`);if(r.retCode)throw new Error('bybit '+r.retMsg);return{bids:r.result.b,asks:r.result.a}},
   async trades(sym){const r=await j(`${BY}/recent-trade?category=spot&symbol=${sym}&limit=60`);if(r.retCode)throw new Error('bybit '+r.retMsg);return r.result.list.map(t=>({id:'by'+t.execId,ts:+t.time,px:+t.price,qty:+t.size,side:t.side=='Buy'?'BUY':'SELL'}))}},
  okx:{name:'OKX',
   async ticker(sym){const r=await j(`${OK}/ticker?instId=${okId(sym)}`);if(r.code!=='0')throw new Error('okx '+r.msg);const t=r.data[0];return{symbol:sym,lastPrice:t.last,priceChangePercent:String((t.last/t.open24h-1)*100),highPrice:t.high24h,lowPrice:t.low24h,volume:t.vol24h,quoteVolume:t.volCcy24h}},
-  async klines(){const r=await j(`${OK}/candles?instId=BTC-USDT&bar=5m&limit=96`);if(r.code!=='0')throw new Error('okx '+r.msg);return r.data.map(x=>[+x[0],+x[1],+x[2],+x[3],+x[4],+x[5]]).reverse()},
+  async klines(sym='BTCUSDT'){const r=await j(`${OK}/candles?instId=${okId(sym)}&bar=5m&limit=96`);if(r.code!=='0')throw new Error('okx '+r.msg);return r.data.map(x=>[+x[0],+x[1],+x[2],+x[3],+x[4],+x[5]]).reverse()},
   async depth(){const r=await j(`${OK}/books?instId=BTC-USDT&sz=20`);if(r.code!=='0')throw new Error('okx '+r.msg);const d=r.data[0];return{bids:d.bids.map(x=>[x[0],x[1]]),asks:d.asks.map(x=>[x[0],x[1]])}},
   async trades(sym){const r=await j(`${OK}/trades?instId=${okId(sym)}&limit=500`);if(r.code!=='0')throw new Error('okx '+r.msg);return r.data.map(t=>({id:'ok'+t.tradeId,ts:+t.ts,px:+t.px,qty:+t.sz,side:t.side=='buy'?'BUY':'SELL'}))}}};
 const okId=s=>s.replace('USDT','-USDT');
@@ -54,9 +54,10 @@ function kpis(){const P=S.pairs,h=Date.now()-36e5;const w=S.whaleTrades.filter(t
  const k={WHALES:w.length,RUGS:P.filter(p=>p.liq>0&&p.liq<5000&&p.h24>50000||p.chg1<-50).length,LAUNCHES:P.filter(p=>p.ageH!==null&&p.ageH<24).length+S.newPools.length,
  UNLOCKS:null,LEVERAGE:null,FLOWS:Math.round(w.reduce((s,t)=>s+(t.side=='BUY'?t.usd:-t.usd),0))};
  for(const[x,v]of Object.entries(k)){if(v===null)continue;const a=(S.kpiHist[x]??=[]);a.push(v);if(a.length>60)a.shift()}return k}
+const paperState=require('./paper.js')({S,j,withEx,log});
 const MIME={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png'};
 http.createServer((q,r)=>{if(q.method!=='GET'&&q.method!=='HEAD'){r.writeHead(405);return r.end()}let u=q.url.split('?')[0];if(u===''||u.endsWith('/'))u='/';
- if(u==='/api/state'){r.writeHead(200,{'content-type':'application/json'});return r.end(JSON.stringify({now:Date.now(),whaleUsd:WHALE_USD,kpi:kpis(),kpiHist:S.kpiHist,pairs:S.pairs,trending:S.trending,newPools:S.newPools,exchange:S.exchange,exchangeErr:S.exchangeErr,geckoNextMs:S.geckoNextMs,btc:S.btc,eth:S.eth,klines:S.klines,whaleTrades:S.whaleTrades,events:S.events.slice(0,80),status:S.status,boostCount:S.boosts.length,profileCount:S.profiles.length}))}
+ if(u==='/api/state'){r.writeHead(200,{'content-type':'application/json'});return r.end(JSON.stringify({now:Date.now(),whaleUsd:WHALE_USD,kpi:kpis(),kpiHist:S.kpiHist,pairs:S.pairs,trending:S.trending,newPools:S.newPools,exchange:S.exchange,exchangeErr:S.exchangeErr,geckoNextMs:S.geckoNextMs,btc:S.btc,eth:S.eth,klines:S.klines,whaleTrades:S.whaleTrades,events:S.events.slice(0,80),status:S.status,paper:paperState(),boostCount:S.boosts.length,profileCount:S.profiles.length}))}
  if(u.startsWith('/api/depth')){return withEx(x=>x.depth()).then(d=>{r.writeHead(200,{'content-type':'application/json'});r.end(JSON.stringify(d))}).catch(e=>{r.writeHead(502);r.end('{}')})}
  const f=path.join(__dirname,'public',u==='/'?'index.html':path.normalize(u));if(!f.startsWith(path.join(__dirname,'public'))){r.writeHead(403);return r.end()}
  fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);return r.end('nf')}r.writeHead(200,{'content-type':MIME[path.extname(f)]||'text/plain'});r.end(d)})

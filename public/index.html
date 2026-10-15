@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#050b18"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><title>WHALE-OS // watch-only</title><link rel="stylesheet" href="style.css"></head><body>
-<header><b>WHALE-OS</b> <span class="dim">v0.1 · WATCH-ONLY · NO WALLET · NO TRADING</span><span id="clock"></span></header>
+<header><b>WHALE-OS</b> <span class="dim">v0.2 · WATCH-ONLY · NO WALLET · PAPER TRADING ONLY (simulated)</span><span id="clock"></span></header>
 <div id="kpis"></div>
 <main>
  <section class="p" style="grid-area:src"><h3>SOURCES</h3><div id="sources"></div></section>
@@ -13,4 +13,6 @@
  <section class="p" style="grid-area:bayes"><h3>BAYES P(up | whale buy) <span class="dim">Beta posterior</span></h3><canvas id="bayes"></canvas></section>
  <section class="p" style="grid-area:trend"><h3>GECKOTERMINAL TRENDING</h3><div id="trend" class="scroll"></div></section>
 </main>
+<section id="paper" class="p"><h3>PAPER TRADING <span class="dim">simulated money only — no real orders · <a href="BACKTEST.md" style="color:#4af">backtest</a></span></h3>
+ <div class="pgrid"><div id="pstats"></div><div><div class="dim">equity curve (1-min)</div><canvas id="pcurve"></canvas></div><div><div class="dim">open positions</div><div id="popen" class="scroll"></div></div><div><div class="dim">closed trades</div><div id="pclosed" class="scroll"></div></div></div></section>
 <footer id="bar"></footer><script src="app.js"></script></body></html>
